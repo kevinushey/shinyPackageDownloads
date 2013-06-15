@@ -55,4 +55,22 @@ shinyServer(function(input, output) {
     return( xtable(tmp) )
   })
   
+  dls_per_pkg <- sapply( split(dat$downloads, dat$package), sum )
+  dls_per_pkg <- data.frame(
+    downloads=dls_per_pkg,
+    package=names(dls_per_pkg)
+  )
+  
+  output$side_plot <- renderPlot({
+    dat_sub <- get_data_subset(dat)
+    print( ggplot(dls_per_pkg, aes(x=downloads)) +
+      geom_histogram() +
+      scale_x_log10() +
+      xlab("Number of Downloads") +
+      ylab("Count") +
+      ggtitle("Number of Downloads per Package") +
+      geom_vline(xintercept=sum(dat_sub$downloads), col="red", lty="dashed")
+    )
+  })
+  
 })
