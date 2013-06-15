@@ -47,7 +47,6 @@ shinyUI( bootstrapPage(
   
   mainPanel(
     plotOutput("main_plot"),
-    plotOutput("side_plot"),
     tableOutput("summary_stats")
   )
   

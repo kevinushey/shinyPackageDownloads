@@ -1,5 +1,6 @@
 library(ggplot2)
 library(xtable)
+library(gridExtra)
 
 ## TODO: figure out how to scope variables in shiny server
 
@@ -18,6 +19,12 @@ shinyServer(function(input, output) {
     dat_sub <- dat_sub[ dat_sub$day %in% input$days_of_the_week, ]
     return( dat_sub )
   }
+  
+  dls_per_pkg <- sapply( split(dat$downloads, dat$package), sum )
+  dls_per_pkg <- data.frame(
+    downloads=dls_per_pkg,
+    package=names(dls_per_pkg)
+  )
   
   output$main_plot <- renderPlot({
     dat_sub <- get_data_subset(dat)
@@ -40,7 +47,16 @@ shinyServer(function(input, output) {
         span=ifelse( input$use_smoother_span, input$smoother_span, 0.75 )
       )
     }
-    print(p)
+    
+    q <- ggplot(dls_per_pkg, aes(x=downloads)) +
+      geom_histogram() +
+      scale_x_log10() +
+      xlab("Number of Downloads") +
+      ylab("Count") +
+      ggtitle("Number of Downloads per Package") +
+      geom_vline(xintercept=sum(dat_sub$downloads), col="red", lty="dashed")
+    
+    invisible( grid.arrange(p, q, ncol=2) )
   })
   
   output$summary_stats <- renderTable({
@@ -52,25 +68,7 @@ shinyServer(function(input, output) {
       stringsAsFactors=FALSE,
       check.names=FALSE
     )
-    return( xtable(tmp) )
-  })
-  
-  dls_per_pkg <- sapply( split(dat$downloads, dat$package), sum )
-  dls_per_pkg <- data.frame(
-    downloads=dls_per_pkg,
-    package=names(dls_per_pkg)
-  )
-  
-  output$side_plot <- renderPlot({
-    dat_sub <- get_data_subset(dat)
-    print( ggplot(dls_per_pkg, aes(x=downloads)) +
-      geom_histogram() +
-      scale_x_log10() +
-      xlab("Number of Downloads") +
-      ylab("Count") +
-      ggtitle("Number of Downloads per Package") +
-      geom_vline(xintercept=sum(dat_sub$downloads), col="red", lty="dashed")
-    )
+    tmp
   })
   
 })
