@@ -1,6 +1,5 @@
 library(ggplot2)
-
-weekdays <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+library(xtable)
 
 shinyUI( bootstrapPage(
   
@@ -22,8 +21,8 @@ shinyUI( bootstrapPage(
     ),
     checkboxGroupInput(inputId="days_of_the_week",
                        label="Days of the week",
-                       choices=weekdays,
-                       selected=weekdays
+                       choices=c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
+                       selected=c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
     ),
     
     ## smoother settings
@@ -47,7 +46,6 @@ shinyUI( bootstrapPage(
   ),
   
   mainPanel(
-    textOutput("loading"),
     plotOutput("main_plot"),
     tableOutput("summary_stats")
   )

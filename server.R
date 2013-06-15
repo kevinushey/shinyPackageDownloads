@@ -1,9 +1,9 @@
 library(ggplot2)
-library(plyr)
+library(xtable)
+
+## TODO: figure out how to scope variables in shiny server
 
 shinyServer(function(input, output) {
-  
-  weekdays <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
   
   ## get the current file data
   dat <- get( load( "download_counts_by_day.Rda" ) )
@@ -22,7 +22,7 @@ shinyServer(function(input, output) {
   output$main_plot <- renderPlot({
     dat_sub <- get_data_subset(dat)
     if( input$group_by_day_of_week ) {
-      p <- ggplot( dat_sub, aes(x=Date, y=downloads, colour=factor(day, levels=weekdays)) ) +
+      p <- ggplot( dat_sub, aes(x=Date, y=downloads, colour=factor(day, levels=c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))) ) +
         scale_colour_discrete(name="Day of the Week")
     } else {
       p <- ggplot( dat_sub, aes(x=Date, y=downloads) )

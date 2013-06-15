@@ -8,7 +8,10 @@ All data is pre-processed such that we only retain the number of downloads
 per day for each package, to keep the data size down. A more full-fledged app
 could interact with the entirety of the logs in a more feature-filled way.
 
-Clone this repository and run the application with
+Clone this repository and run the application from the terminal with
 
     R -e "shiny::runApp('shinyPackageDownloads')"
     
+and then take your favourite browser and navigate to
+
+    http://localhost:8100/
